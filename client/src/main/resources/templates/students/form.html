@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${student.id == null ? 'Thêm sinh viên' : 'Sửa sinh viên'})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container" style="max-width: 640px">
+    <h3 th:text="${student.id == null ? 'Thêm sinh viên' : 'Sửa sinh viên'}"></h3>
+
+    <form class="card card-body" th:action="@{/students/save}" th:object="${student}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-3">
+            <label class="form-label">Họ tên <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" th:field="*{name}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:errors="*{name}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Địa chỉ</label>
+            <input type="text" class="form-control" th:field="*{address}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Điện thoại</label>
+            <input type="text" class="form-control" th:field="*{phone}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:errors="*{phone}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ngày sinh</label>
+            <input type="date" class="form-control" th:field="*{dob}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:errors="*{dob}"></div>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a class="btn btn-secondary" th:href="@{/students}">Hủy</a>
+        </div>
+    </form>
+</div>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Danh sách sinh viên')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments/layout :: message}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Danh sách sinh viên</h3>
+        <a class="btn btn-success" th:href="@{/students/new}">+ Thêm sinh viên</a>
+    </div>
+
+    <!-- Tìm sinh viên theo tên -->
+    <form class="row g-2 mb-3" th:action="@{/students}" method="get">
+        <div class="col-md-6">
+            <input type="text" class="form-control" name="name" th:value="${name}" placeholder="Nhập tên sinh viên...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            <a class="btn btn-outline-secondary" th:href="@{/students}">Tất cả</a>
+        </div>
+    </form>
+
+    <div class="card">
+        <table class="table table-hover table-striped mb-0 align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Địa chỉ</th>
+                <th>Điện thoại</th>
+                <th>Ngày sinh</th>
+                <th class="text-end">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(students)}">
+                <td colspan="6" class="text-center text-muted py-4">Không có sinh viên nào</td>
+            </tr>
+            <tr th:each="s : ${students}" class="clickable"
+                th:data-href="@{/students/{id}(id=${s.id})}" onclick="location.href = this.dataset.href">
+                <td th:text="${s.id}"></td>
+                <td th:text="${s.name}"></td>
+                <td th:text="${s.address}"></td>
+                <td th:text="${s.phone}"></td>
+                <td th:text="${s.dob != null ? #temporals.format(s.dob, 'dd/MM/yyyy') : ''}"></td>
+                <td class="text-end" onclick="event.stopPropagation()">
+                    <a class="btn btn-sm btn-info text-white" th:href="@{/students/{id}(id=${s.id})}">Môn học</a>
+                    <a class="btn btn-sm btn-warning" th:href="@{/students/{id}/edit(id=${s.id})}">Sửa</a>
+                    <form class="d-inline" th:action="@{/students/{id}/delete(id=${s.id})}" method="post"
+                          onsubmit="return confirm('Xóa sinh viên này và toàn bộ môn học của sinh viên?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small mt-2">Bấm vào một sinh viên để xem danh sách môn học, điểm trung bình và xếp loại.</p>
+</div>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

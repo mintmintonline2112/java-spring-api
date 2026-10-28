@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Môn học của sinh viên')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments/layout :: message}"></div>
+
+    <a class="btn btn-link px-0 mb-2" th:href="@{/students}">&larr; Quay lại danh sách</a>
+
+    <!-- Thông tin sinh viên + điểm TB + xếp loại -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title" th:text="${student.name}"></h4>
+                    <p class="mb-1"><strong>Mã SV:</strong> <span th:text="${student.id}"></span></p>
+                    <p class="mb-1"><strong>Địa chỉ:</strong> <span th:text="${student.address}"></span></p>
+                    <p class="mb-1"><strong>Điện thoại:</strong> <span th:text="${student.phone}"></span></p>
+                    <p class="mb-0"><strong>Ngày sinh:</strong>
+                        <span th:text="${student.dob != null ? #temporals.format(student.dob, 'dd/MM/yyyy') : ''}"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 text-center summary-card">
+                <div class="card-body">
+                    <div class="text-muted">Điểm trung bình</div>
+                    <div class="value text-primary" th:text="${#numbers.formatDecimal(summary.average, 1, 2)}"></div>
+                    <div class="small text-muted" th:text="|${summary.courseCount} môn học|"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 text-center summary-card">
+                <div class="card-body">
+                    <div class="text-muted">Xếp loại</div>
+                    <div class="value text-success" th:text="${summary.rank}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Danh sách môn học</h4>
+        <a class="btn btn-success" th:href="@{/students/{id}/courses/new(id=${student.id})}">+ Thêm môn học</a>
+    </div>
+
+    <!-- Tìm môn học theo tên, điểm số -->
+    <form class="row g-2 mb-3" th:action="@{/students/{id}(id=${student.id})}" method="get">
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="courseName" th:value="${courseName}" placeholder="Tên môn học...">
+        </div>
+        <div class="col-md-2">
+            <input type="number" step="0.1" min="0" max="10" class="form-control" name="minScore"
+                   th:value="${minScore}" placeholder="Điểm từ">
+        </div>
+        <div class="col-md-2">
+            <input type="number" step="0.1" min="0" max="10" class="form-control" name="maxScore"
+                   th:value="${maxScore}" placeholder="Điểm đến">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            <a class="btn btn-outline-secondary" th:href="@{/students/{id}(id=${student.id})}">Tất cả</a>
+        </div>
+    </form>
+
+    <div class="card">
+        <table class="table table-striped mb-0 align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Tên môn học</th>
+                <th>Điểm</th>
+                <th class="text-end">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(courses)}">
+                <td colspan="4" class="text-center text-muted py-4">Không có môn học nào</td>
+            </tr>
+            <tr th:each="c : ${courses}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.name}"></td>
+                <td th:text="${c.score}"></td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-warning"
+                       th:href="@{/students/{sid}/courses/{id}/edit(sid=${student.id}, id=${c.id})}">Sửa</a>
+                    <form class="d-inline" method="post"
+                          th:action="@{/students/{sid}/courses/{id}/delete(sid=${student.id}, id=${c.id})}"
+                          onsubmit="return confirm('Xóa môn học này?')">
+                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

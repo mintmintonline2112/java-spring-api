@@ -1,0 +1,12 @@
+body {
+    background-color: #f5f7fa;
+}
+
+.table-hover tbody tr.clickable {
+    cursor: pointer;
+}
+
+.summary-card .value {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
