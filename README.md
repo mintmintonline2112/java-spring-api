@@ -12,26 +12,45 @@ Gồm 2 project Spring Boot độc lập:
 ```
 database.sql                         Script tạo DB APIDB + dữ liệu mẫu
 api/src/main/java/com/example/api
-├── entity/        Student, Course (JPA entity)
+├── entity/        BaseEntity (id tự tăng), Student, Course (JPA entity)
 ├── repository/    StudentRepository, CourseRepository (Spring Data JPA)
-├── service/       StudentService, CourseService (nghiệp vụ, tính ĐTB + xếp loại)
-├── controller/    StudentApiController, CourseApiController (@RestController)
-└── exception/     NotFoundException, GlobalExceptionHandler
+├── service/       BaseService (CRUD chung), StudentService, CourseService (tính ĐTB + xếp loại)
+├── controller/    BaseApiController (CRUD API chung), StudentApiController, CourseApiController
+└── exception/     NotFoundException, BadRequestException, GlobalExceptionHandler
 client/src/main/java/com/example/client
-├── model/         Student, Course, StudentSummary
-├── service/       StudentApiService, CourseApiService (gọi API bằng RestTemplate)
-├── controller/    StudentController, CourseController (@Controller)
+├── model/         BaseModel, Student, Course, StudentSummary
+├── service/       BaseApiService (gọi CRUD API chung), StudentApiService, CourseApiService
+├── controller/    BaseMvcController (CRUD giao diện chung), StudentController, CourseController
 └── config/        RestTemplateConfig
 client/src/main/resources/templates
 ├── students/      list.html, form.html, detail.html
 └── courses/       form.html
 ```
 
+## Thêm đối tượng mới (dùng lại CRUD chung)
+
+Ví dụ thêm `Teacher`:
+
+**API**
+1. `entity/Teacher.java`: `@Entity public class Teacher extends BaseEntity { ... }` (không cần khai báo `id`).
+2. `repository/TeacherRepository.java`: `interface TeacherRepository extends JpaRepository<Teacher, Integer>`.
+3. `service/TeacherService.java`: `@Service class TeacherService extends BaseService<Teacher>`,
+   gọi `super(repository, "giáo viên")`, cài đặt `copyData()`; override `search()` nếu cần tìm kiếm.
+4. `controller/TeacherApiController.java`: `@RestController @RequestMapping("/api/teachers")`
+   `class TeacherApiController extends BaseApiController<Teacher>` → có ngay GET/POST/PUT/DELETE + `?keyword=`.
+
+**Client**
+1. `model/Teacher.java extends BaseModel`.
+2. `service/TeacherApiService extends BaseApiService<Teacher>`: `super(restTemplate, "/teachers", Teacher.class, Teacher[].class)`.
+3. `controller/TeacherController extends BaseMvcController<Teacher>`: `@Controller @RequestMapping("/teachers")`,
+   `super(service, "teacher", "teachers", "giáo viên")`, cài đặt `newItem()`.
+4. Template `teachers/list.html` (biến `${teachers}`, `${keyword}`) và `teachers/form.html` (biến `${teacher}`, form post tới `/teachers/save`).
+
 ## Danh sách Web API
 
 | Method | URL | Chức năng |
 |--------|-----|-----------|
-| GET    | `/api/students?name=` | Liệt kê / tìm sinh viên theo tên |
+| GET    | `/api/students?keyword=` | Liệt kê / tìm sinh viên theo tên |
 | GET    | `/api/students/{id}` | Lấy 1 sinh viên |
 | POST   | `/api/students` | Thêm sinh viên |
 | PUT    | `/api/students/{id}` | Sửa sinh viên |

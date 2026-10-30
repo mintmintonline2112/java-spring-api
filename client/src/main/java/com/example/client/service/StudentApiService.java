@@ -5,38 +5,12 @@ import com.example.client.model.StudentSummary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-
+// CRUD sinh viên kế thừa từ BaseApiService
 @Service
-public class StudentApiService {
-
-    private final RestTemplate restTemplate;
+public class StudentApiService extends BaseApiService<Student> {
 
     public StudentApiService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-    public List<Student> findAll(String name) {
-        Student[] students = restTemplate.getForObject("/students?name={name}", Student[].class,
-                name == null ? "" : name);
-        return students == null ? List.of() : Arrays.asList(students);
-    }
-
-    public Student findById(Integer id) {
-        return restTemplate.getForObject("/students/{id}", Student.class, id);
-    }
-
-    public void save(Student student) {
-        if (student.getId() == null) {
-            restTemplate.postForObject("/students", student, Student.class);
-        } else {
-            restTemplate.put("/students/{id}", student, student.getId());
-        }
-    }
-
-    public void delete(Integer id) {
-        restTemplate.delete("/students/{id}", id);
+        super(restTemplate, "/students", Student.class, Student[].class);
     }
 
     public StudentSummary getSummary(Integer id) {

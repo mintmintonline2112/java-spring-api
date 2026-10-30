@@ -6,9 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class Course {
-
-    private Integer id;
+public class Course extends BaseModel {
 
     @NotBlank(message = "Tên môn học không được để trống")
     @Size(max = 255, message = "Tên môn học tối đa 255 ký tự")
@@ -20,9 +18,6 @@ public class Course {
     private Double score;
 
     private Integer studentId;
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

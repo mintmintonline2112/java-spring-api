@@ -8,9 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-public class Student {
-
-    private Integer id;
+public class Student extends BaseModel {
 
     @NotBlank(message = "Tên sinh viên không được để trống")
     @Size(max = 255, message = "Tên sinh viên tối đa 255 ký tự")
@@ -25,9 +23,6 @@ public class Student {
     @Past(message = "Ngày sinh phải nhỏ hơn ngày hiện tại")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dob;
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

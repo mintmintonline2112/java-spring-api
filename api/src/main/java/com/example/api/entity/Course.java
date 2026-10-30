@@ -10,11 +10,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "course")
-public class Course {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Course extends BaseEntity {
 
     @NotBlank(message = "Tên môn học không được để trống")
     @Size(max = 255, message = "Tên môn học tối đa 255 ký tự")
@@ -34,9 +30,6 @@ public class Course {
     public Integer getStudentId() {
         return student != null ? student.getId() : null;
     }
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

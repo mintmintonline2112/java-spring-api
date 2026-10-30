@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class CourseService {
+public class CourseService extends BaseService<Course> {
 
     private final CourseRepository courseRepository;
     private final StudentService studentService;
 
     public CourseService(CourseRepository courseRepository, StudentService studentService) {
+        super(courseRepository, "môn học");
         this.courseRepository = courseRepository;
         this.studentService = studentService;
     }
@@ -31,9 +32,10 @@ public class CourseService {
         return courseRepository.search(studentId, keyword, minScore, maxScore);
     }
 
-    public Course findById(Integer id) {
-        return courseRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy môn học id = " + id));
+    @Override
+    protected void copyData(Course source, Course target) {
+        target.setName(source.getName());
+        target.setScore(source.getScore());
     }
 
     // Lấy môn học và kiểm tra môn học có thuộc sinh viên studentId không
@@ -52,20 +54,9 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    public Course update(Integer id, Course data) {
-        Course course = findById(id);
-        course.setName(data.getName());
-        course.setScore(data.getScore());
-        return courseRepository.save(course);
-    }
-
     public Course updateForStudent(Integer studentId, Integer id, Course data) {
         findByIdForStudent(studentId, id);
         return update(id, data);
-    }
-
-    public void delete(Integer id) {
-        courseRepository.delete(findById(id));
     }
 
     public void deleteForStudent(Integer studentId, Integer id) {

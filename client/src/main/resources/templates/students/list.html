@@ -15,7 +15,7 @@
     <!-- Tìm sinh viên theo tên -->
     <form class="row g-2 mb-3" th:action="@{/students}" method="get">
         <div class="col-md-6">
-            <input type="text" class="form-control" name="name" th:value="${name}" placeholder="Nhập tên sinh viên...">
+            <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Nhập tên sinh viên...">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>

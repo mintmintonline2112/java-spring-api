@@ -13,11 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "student")
-public class Student {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Student extends BaseEntity {
 
     @NotBlank(message = "Tên sinh viên không được để trống")
     @Size(max = 255, message = "Tên sinh viên tối đa 255 ký tự")
@@ -36,9 +32,6 @@ public class Student {
     @JsonIgnore
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Course> courses = new ArrayList<>();
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
