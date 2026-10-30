@@ -3,6 +3,7 @@ package com.example.client.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -12,8 +13,10 @@ public class Student {
     private Integer id;
 
     @NotBlank(message = "Tên sinh viên không được để trống")
+    @Size(max = 255, message = "Tên sinh viên tối đa 255 ký tự")
     private String name;
 
+    @Size(max = 255, message = "Địa chỉ tối đa 255 ký tự")
     private String address;
 
     @Pattern(regexp = "^$|^[0-9]{9,11}$", message = "Số điện thoại gồm 9-11 chữ số")

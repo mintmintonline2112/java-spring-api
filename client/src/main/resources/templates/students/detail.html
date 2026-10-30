@@ -66,6 +66,8 @@
         </div>
     </form>
 
+    <div class="alert alert-warning" th:if="${searchError}" th:text="${searchError}"></div>
+
     <div class="card">
         <table class="table table-striped mb-0 align-middle">
             <thead class="table-light">

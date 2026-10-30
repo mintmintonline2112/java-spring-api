@@ -33,7 +33,7 @@ public class CourseController {
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Integer studentId, @PathVariable Integer id, Model model) {
         model.addAttribute("student", studentApiService.findById(studentId));
-        model.addAttribute("course", courseApiService.findById(id));
+        model.addAttribute("course", courseApiService.findById(studentId, id));
         return "courses/form";
     }
 
@@ -53,7 +53,7 @@ public class CourseController {
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Integer studentId, @PathVariable Integer id, RedirectAttributes ra) {
-        courseApiService.delete(id);
+        courseApiService.delete(studentId, id);
         ra.addFlashAttribute("message", "Đã xóa môn học");
         return "redirect:/students/" + studentId;
     }

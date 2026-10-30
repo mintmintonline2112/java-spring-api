@@ -67,6 +67,24 @@ public class StudentApiController {
         return courseService.create(id, course);
     }
 
+    // GET/PUT/DELETE /api/students/{id}/courses/{courseId}   (chỉ thao tác môn học thuộc đúng sinh viên)
+    @GetMapping("/{id}/courses/{courseId}")
+    public Course getCourse(@PathVariable Integer id, @PathVariable Integer courseId) {
+        return courseService.findByIdForStudent(id, courseId);
+    }
+
+    @PutMapping("/{id}/courses/{courseId}")
+    public Course updateCourse(@PathVariable Integer id, @PathVariable Integer courseId,
+                               @Valid @RequestBody Course course) {
+        return courseService.updateForStudent(id, courseId, course);
+    }
+
+    @DeleteMapping("/{id}/courses/{courseId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCourse(@PathVariable Integer id, @PathVariable Integer courseId) {
+        courseService.deleteForStudent(id, courseId);
+    }
+
     // GET /api/students/{id}/summary   (điểm trung bình + xếp loại)
     @GetMapping("/{id}/summary")
     public Map<String, Object> summary(@PathVariable Integer id) {

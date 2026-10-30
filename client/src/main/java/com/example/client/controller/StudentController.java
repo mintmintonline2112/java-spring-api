@@ -69,7 +69,12 @@ public class StudentController {
                          @RequestParam(required = false) Double maxScore,
                          Model model) {
         model.addAttribute("student", studentApiService.findById(id));
-        model.addAttribute("courses", courseApiService.findByStudent(id, courseName, minScore, maxScore));
+        if (minScore != null && maxScore != null && minScore > maxScore) {
+            model.addAttribute("searchError", "Điểm từ phải nhỏ hơn hoặc bằng điểm đến");
+            model.addAttribute("courses", courseApiService.findByStudent(id, courseName, null, null));
+        } else {
+            model.addAttribute("courses", courseApiService.findByStudent(id, courseName, minScore, maxScore));
+        }
         model.addAttribute("summary", studentApiService.getSummary(id));
         model.addAttribute("courseName", courseName);
         model.addAttribute("minScore", minScore);

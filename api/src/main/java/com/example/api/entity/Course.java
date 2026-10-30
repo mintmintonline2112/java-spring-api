@@ -6,6 +6,7 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "course")
@@ -16,6 +17,7 @@ public class Course {
     private Integer id;
 
     @NotBlank(message = "Tên môn học không được để trống")
+    @Size(max = 255, message = "Tên môn học tối đa 255 ký tự")
     private String name;
 
     @NotNull(message = "Điểm không được để trống")

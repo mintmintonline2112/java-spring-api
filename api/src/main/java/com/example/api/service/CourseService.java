@@ -2,6 +2,7 @@ package com.example.api.service;
 
 import com.example.api.entity.Course;
 import com.example.api.entity.Student;
+import com.example.api.exception.BadRequestException;
 import com.example.api.exception.NotFoundException;
 import com.example.api.repository.CourseRepository;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class CourseService {
 
     public List<Course> findByStudent(Integer studentId, String name, Double minScore, Double maxScore) {
         studentService.findById(studentId);
+        if (minScore != null && maxScore != null && minScore > maxScore) {
+            throw new BadRequestException("Điểm từ phải nhỏ hơn hoặc bằng điểm đến");
+        }
         String keyword = name == null ? "" : name.trim();
         return courseRepository.search(studentId, keyword, minScore, maxScore);
     }
@@ -30,6 +34,15 @@ public class CourseService {
     public Course findById(Integer id) {
         return courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy môn học id = " + id));
+    }
+
+    // Lấy môn học và kiểm tra môn học có thuộc sinh viên studentId không
+    public Course findByIdForStudent(Integer studentId, Integer id) {
+        Course course = findById(id);
+        if (!course.getStudentId().equals(studentId)) {
+            throw new NotFoundException("Sinh viên id = " + studentId + " không có môn học id = " + id);
+        }
+        return course;
     }
 
     public Course create(Integer studentId, Course course) {
@@ -46,8 +59,17 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    public Course updateForStudent(Integer studentId, Integer id, Course data) {
+        findByIdForStudent(studentId, id);
+        return update(id, data);
+    }
+
     public void delete(Integer id) {
         courseRepository.delete(findById(id));
+    }
+
+    public void deleteForStudent(Integer studentId, Integer id) {
+        courseRepository.delete(findByIdForStudent(studentId, id));
     }
 
     /**

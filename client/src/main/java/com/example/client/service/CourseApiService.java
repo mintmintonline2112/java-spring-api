@@ -35,19 +35,19 @@ public class CourseApiService {
         return courses == null ? List.of() : Arrays.asList(courses);
     }
 
-    public Course findById(Integer id) {
-        return restTemplate.getForObject("/courses/{id}", Course.class, id);
+    public Course findById(Integer studentId, Integer id) {
+        return restTemplate.getForObject("/students/{studentId}/courses/{id}", Course.class, studentId, id);
     }
 
     public void save(Integer studentId, Course course) {
         if (course.getId() == null) {
             restTemplate.postForObject("/students/{studentId}/courses", course, Course.class, studentId);
         } else {
-            restTemplate.put("/courses/{id}", course, course.getId());
+            restTemplate.put("/students/{studentId}/courses/{id}", course, studentId, course.getId());
         }
     }
 
-    public void delete(Integer id) {
-        restTemplate.delete("/courses/{id}", id);
+    public void delete(Integer studentId, Integer id) {
+        restTemplate.delete("/students/{studentId}/courses/{id}", studentId, id);
     }
 }

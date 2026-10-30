@@ -18,7 +18,7 @@
     <description>Web API quan ly sinh vien - mon hoc (Spring Data JPA + Spring Web)</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>25</java.version>
     </properties>
 
     <dependencies>
